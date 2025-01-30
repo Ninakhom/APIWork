@@ -1,9 +1,9 @@
 import { Role } from "@prisma/client";
 
-export interface CategoryWork {
-  id: number;
-  category: string;
-  isDeleted: boolean;
+export interface JobCategory {
+  JobCategoryId: number;
+  JobCategoryName: string;
+  JobCategoryIcon: string;
 }
 export interface Position {
   id: number;

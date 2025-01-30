@@ -1,10 +1,10 @@
 import BadRequestError from "../Error/BadRequestError";
-import { CategoryWork } from "../Types/Type";
+import { JobCategory } from "../Types/Type";
 import { prisma } from "../lib/prisma";
 export const getallCagetoryWork = async (
   page: number = 1,
   limit: number = 10
-): Promise<{ data: CategoryWork[]; total: number; page: number }> => {
+): Promise<{ data: JobCategory[]; total: number; page: number }> => {
   const skip = (page - 1) * limit;
   // skip: จำนวนรายการที่ต้อง "ข้าม" ก่อนที่จะเริ่มดึงข้อมูลในหน้าปัจจุบัน
   // ตัวอย่าง:
@@ -12,22 +12,22 @@ export const getallCagetoryWork = async (
   // ถ้าอยู่หน้า 2: (2 - 1) * 10 = 10 → ข้าม 10 รายการแรก
   // ถ้าอยู่หน้า 3: (3 - 1) * 10 = 20 → ข้าม 20 รายการแรก
   const [data, total] = await Promise.all([
-    prisma.cagetoryWork.findMany({
-      where: { isDeleted: false },
+    prisma.jobCategory.findMany({
       skip,
       take: limit,
     }),
-    prisma.cagetoryWork.count({ where: { isDeleted: false } }),
+    prisma.jobCategory.count(),
   ]);
   return { data, total, page };
 };
 export const addCategoryWork = async (
-  category: string // แก้ไข Type ให้รับ string
-): Promise<CategoryWork> => {
+  category: string,
+  categoryicon: string // แก้ไข Type ให้รับ string
+): Promise<JobCategory> => {
   try {
     // ตรวจสอบว่ามี category นี้อยู่แล้วหรือไม่
-    const existingCategory = await prisma.cagetoryWork.findUnique({
-      where: { category: category },
+    const existingCategory = await prisma.jobCategory.findUnique({
+      where: { JobCategoryName: category },
     });
 
     // ถ้ามี category ซ้ำกันอยู่แล้ว ให้ส่งข้อผิดพลาด
@@ -40,10 +40,8 @@ export const addCategoryWork = async (
     }
 
     // ถ้าไม่มี category ซ้ำกัน ให้สร้างข้อมูลใหม่
-    return await prisma.cagetoryWork.create({
-      data: {
-        category: category,
-      },
+    return await prisma.jobCategory.create({
+      data: { JobCategoryName: category, JobCategoryIcon: categoryicon }, // แก้ไข Type ให้รับ string
     });
   } catch (error) {
     // ส่งข้อผิดพลาดไปยัง Controller
@@ -52,12 +50,13 @@ export const addCategoryWork = async (
 };
 export const updateCategoryWork = async (
   id: number,
-  category: string
-): Promise<CategoryWork> => {
+  category: string,
+  categoryicon: string // แก้ไข Type ให้รับ string
+): Promise<JobCategory> => {
   try {
-    return await prisma.cagetoryWork.update({
-      where: { id },
-      data: { category },
+    return await prisma.jobCategory.update({
+      where: { JobCategoryId: id },
+      data: { JobCategoryName: category, JobCategoryIcon: categoryicon },
     });
   } catch (error) {
     // ส่งข้อผิดพลาดไปยัง Controller
@@ -68,9 +67,12 @@ export const updateCategoryWork = async (
 export const deleteCategoryWork = async (
   id: number,
   data: { isDeleted: boolean }
-): Promise<CategoryWork | null> => {
+): Promise<JobCategory | null> => {
   try {
-    return await prisma.cagetoryWork.update({ where: { id }, data });
+    return await prisma.jobCategory.update({
+      where: { JobCategoryId: id },
+      data,
+    });
   } catch (error) {
     throw error;
   }

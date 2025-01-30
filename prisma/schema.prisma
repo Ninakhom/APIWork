@@ -19,20 +19,17 @@ enum Role {
   Company
 }
 
-model CagetoryWork {
-  id        Int     @id @default(autoincrement())
-  category  String
-  isDeleted Boolean @default(false)
+model JobCategory {
+  JobCategoryId   Int    @id @default(autoincrement())
+  JobCategoryName String
+  JobCategoryIcon String
 
-  @@unique([category])
+  @@unique([JobCategoryName])
 }
 
-model Position {
-  id        Int     @id @default(autoincrement())
-  position  String
-  isDeleted Boolean @default(false)
-
-  @@unique([position])
+model JobPosition {
+  JobPositionId   Int    @id @default(autoincrement())
+  JobPositionName String
 }
 
 model User {

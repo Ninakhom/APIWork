@@ -30,6 +30,7 @@ export default {
     next: NextFunction
   ): Promise<void> => {
     try {
+      const { category, categoryIcon } = req.body;
       const isCategoryValid = validateAddCategoryWork(req.body);
       if (!isCategoryValid) {
         throw new BadRequestError({
@@ -39,7 +40,7 @@ export default {
         });
       }
 
-      const newCategoryWork = await addCategoryWork(req.body.category);
+      const newCategoryWork = await addCategoryWork(category, categoryIcon);
       res.status(201).json(newCategoryWork);
     } catch (error) {
       next(error);
@@ -53,6 +54,7 @@ export default {
   ): Promise<void> => {
     try {
       const { id } = req.params;
+      const { category, categoryIcon } = req.body;
       const isCategoryValid = validateAddCategoryWork(req.body);
       if (!id || isNaN(Number(id))) {
         throw new BadRequestError({
@@ -70,7 +72,8 @@ export default {
 
       const updatedCategoryWork = await updateCategoryWork(
         Number(id),
-        req.body.category
+        category,
+        categoryIcon
       );
       res.status(200).json(updatedCategoryWork);
     } catch (error) {
