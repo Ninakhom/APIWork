@@ -6,9 +6,8 @@ export interface JobCategory {
   JobCategoryIcon: string;
 }
 export interface Position {
-  id: number;
-  position: string;
-  isDeleted: boolean;
+  JobPositionId: number;
+  JobPositionName: string;
 }
 export interface User {
   id: number;

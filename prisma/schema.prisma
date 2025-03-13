@@ -30,6 +30,8 @@ model JobCategory {
 model JobPosition {
   JobPositionId   Int    @id @default(autoincrement())
   JobPositionName String
+
+  @@unique([JobPositionName])
 }
 
 model User {

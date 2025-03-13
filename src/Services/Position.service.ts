@@ -7,19 +7,18 @@ export const getallPosition = async (
 ): Promise<{ data: Position[]; total: number; page: number }> => {
   const skip = (page - 1) * limit;
   const [data, total] = await Promise.all([
-    prisma.position.findMany({
-      where: { isDeleted: false },
+    prisma.jobPosition.findMany({
       skip,
       take: limit,
     }),
-    prisma.position.count({ where: { isDeleted: false } }),
+    prisma.jobPosition.count(),
   ]);
   return { data, total, page };
 };
 export const addPosition = async (position: string): Promise<Position> => {
   try {
-    const existingPosition = await prisma.position.findUnique({
-      where: { position: position },
+    const existingPosition = await prisma.jobPosition.findUnique({
+      where: { JobPositionName: position },
     });
 
     if (existingPosition) {
@@ -30,9 +29,9 @@ export const addPosition = async (position: string): Promise<Position> => {
       });
     }
 
-    return await prisma.position.create({
+    return await prisma.jobPosition.create({
       data: {
-        position: position,
+        JobPositionName: position,
       },
     });
   } catch (error) {
@@ -43,14 +42,17 @@ export const updatePosition = async (
   id: number,
   position: string
 ): Promise<Position | null> => {
-  return await prisma.position.update({
-    where: { id },
-    data: { position },
+  return await prisma.jobPosition.update({
+    where: { JobPositionId: id },
+    data: { JobPositionName: position },
   });
 };
 export const deletePosition = async (
   id: number,
   data: { isDeleted: boolean }
 ): Promise<Position | null> => {
-  return await prisma.position.update({ where: { id }, data });
+  return await prisma.jobPosition.update({
+    where: { JobPositionId: id },
+    data,
+  });
 };

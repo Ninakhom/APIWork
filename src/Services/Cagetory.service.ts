@@ -5,12 +5,10 @@ export const getallCagetoryWork = async (
   page: number = 1,
   limit: number = 10
 ): Promise<{ data: JobCategory[]; total: number; page: number }> => {
+  // Calculate the number of items to skip
   const skip = (page - 1) * limit;
-  // skip: จำนวนรายการที่ต้อง "ข้าม" ก่อนที่จะเริ่มดึงข้อมูลในหน้าปัจจุบัน
-  // ตัวอย่าง:
-  // ถ้าอยู่หน้า 1: (1 - 1) * 10 = 0 → ไม่ข้ามรายการใดเลย
-  // ถ้าอยู่หน้า 2: (2 - 1) * 10 = 10 → ข้าม 10 รายการแรก
-  // ถ้าอยู่หน้า 3: (3 - 1) * 10 = 20 → ข้าม 20 รายการแรก
+
+  // Fetch data and total count concurrently
   const [data, total] = await Promise.all([
     prisma.jobCategory.findMany({
       skip,
@@ -18,6 +16,8 @@ export const getallCagetoryWork = async (
     }),
     prisma.jobCategory.count(),
   ]);
+
+  // Return the result
   return { data, total, page };
 };
 export const addCategoryWork = async (
